@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: aliceblue;
+}
+
+th,
+td {
+  border: 2px;
+  border-color: black;
+}
