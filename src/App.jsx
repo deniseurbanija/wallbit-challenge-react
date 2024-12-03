@@ -7,13 +7,10 @@ const App = () => {
   const { cart, addToCart, clearCart } = useCart();
 
   return (
-    <div>
-      <h1 className="text-lg font-bold p-5">
-        Carrito de Compras para Programadores
-      </h1>
+    <div className="flex flex-row justify-center items-center w-full bg-red-600 p-12 gap-4">
       <ProductForm addToCart={addToCart} />
-      <Cart cart={cart} />
-      <button onClick={clearCart}>Clear cart</button>
+      <Cart cart={cart} clearCart={clearCart} />
+      {/* <button onClick={clearCart}>Clear cart</button> */}
       <Toaster />
     </div>
   );

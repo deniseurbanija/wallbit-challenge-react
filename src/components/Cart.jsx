@@ -1,39 +1,53 @@
 import React from "react";
 import useCart from "../hooks/useCart";
+import { toast } from "sonner";
 
-export const Cart = ({ cart }) => {
+export const Cart = ({ cart, clearCart }) => {
   const totalProducts = cart.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
 
+  const handleClearCart = () => {
+    clearCart();
+    toast.success("Cart cleared");
+  };
+
   return (
-    <div className="p-4 bg-white shadow rounded mt-6">
-      <h2 className="text-lg font-bold text-slate-800">
-        Cart ({totalProducts})
-      </h2>
+    <div className="p-6 bg-white shadow rounded w-2/3 flex flex-col text-appleGray-700">
+      <h2 className="text-lg font-bold m-2">Cart ({totalProducts})</h2>
       {cart.length > 0 ? (
         <>
-          <table className="w-full border rounded border-gray-300">
+          <table className="w-full border rounded border-gray-300 my-2">
             <thead>
               <tr>
-                <th className="w-1/4">Producto</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
                 <th>Total</th>
-                <th>Imagen</th>
+                <th>Image</th>
               </tr>
             </thead>
             <tbody>
               {cart.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.title}</td>
-                  <td>${item.price}</td>
-                  <td>{item.quantity}</td>
-                  <td>${(item.price * item.quantity).toFixed(2)}</td>
-                  <td>
-                    <img src={item.image} alt={item.title} width={50} />
+                <tr
+                  key={index}
+                  className="border-b hover:bg-gray-50 text-center"
+                >
+                  <td className="py-3 px-4">{item.title}</td>
+                  <td className="py-3 px-4">${item.price}</td>
+                  <td className="py-3 px-4">{item.quantity}</td>
+                  <td className="py-3 px-4">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </td>
+                  <td className="py-3 px-4">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="rounded-md"
+                      width={50}
+                    />
                   </td>
                 </tr>
               ))}
@@ -41,6 +55,7 @@ export const Cart = ({ cart }) => {
           </table>
           <div>
             <p>Total: ${totalPrice.toFixed(2)}</p>
+            <button onClick={handleClearCart}>Clear Cart</button>
           </div>
         </>
       ) : (
