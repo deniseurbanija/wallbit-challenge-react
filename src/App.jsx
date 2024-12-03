@@ -2,17 +2,16 @@ import { Toaster } from "sonner";
 import { Cart } from "./components/Cart";
 import { ProductForm } from "./components/ProductForm";
 import React from "react";
-import { useCart } from "./hooks/useCart"; // Tu hook personalizado para el carrito
-
+import { useCart } from "./hooks/useCart";
 const App = () => {
-  const { cart, addToCart, clearCart } = useCart(); // Usamos el hook personalizado
+  const { cart, addToCart, clearCart } = useCart();
 
   return (
     <div>
-      <h1>Carrito de Compras para Programadores</h1>
-      {/* Formulario para agregar productos */}
+      <h1 className="text-lg font-bold p-5">
+        Carrito de Compras para Programadores
+      </h1>
       <ProductForm addToCart={addToCart} />
-      {/* Tabla de productos */}
       <Cart cart={cart} />
       <button onClick={clearCart}>Clear cart</button>
       <Toaster />
