@@ -33,6 +33,10 @@ export const useCart = () => {
     }
   };
 
+  const deleteItem = (productId) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  };
+
   const clearCart = () => {
     setCart([]);
     setCreationDate(new Date());
@@ -43,6 +47,7 @@ export const useCart = () => {
     addToCart,
     creationDate,
     clearCart,
+    deleteItem,
   };
 };
 
