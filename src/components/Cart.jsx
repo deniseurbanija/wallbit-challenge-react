@@ -1,5 +1,6 @@
 import React from "react";
 import { toast } from "sonner";
+import { CartItem } from "./CartItem";
 
 export const Cart = ({ cart, clearCart, creationDate, deleteItem }) => {
   const totalProducts = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -19,14 +20,14 @@ export const Cart = ({ cart, clearCart, creationDate, deleteItem }) => {
   };
 
   return (
-    <div className="font-sans p-6 h-5/6 bg-white shadow rounded w-2/3 flex flex-col text-appleGray-700 ">
+    <div className="font-sans p-6 h-96 bg-white shadow rounded w-2/3 flex flex-col ">
       {cart.length > 0 ? (
-        <div className="text-xl">
+        <div>
           <h2 className="font-bold m-2 text-2xl">
             Carrito de compras ({totalProducts}) - iniciado el{" "}
             {creationDate.toLocaleDateString()}
           </h2>
-          <div className="overflow-y-auto max-h-72">
+          <div className="overflow-y-auto max-h-60">
             <table className="w-full border-collapse border border-gray-300 rounded-md my-4 shadow-sm">
               <thead>
                 <tr>
@@ -39,32 +40,11 @@ export const Cart = ({ cart, clearCart, creationDate, deleteItem }) => {
               </thead>
               <tbody>
                 {cart.map((item, index) => (
-                  <tr
+                  <CartItem
                     key={index}
-                    className="border-b hover:bg-gray-50 text-center"
-                  >
-                    <td className="py-4 px-6">{item.title}</td>
-                    <td className="py-4 px-6">${item.price}</td>
-                    <td className="py-4 px-6">{item.quantity}</td>
-                    <td className="py-4 px-6">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </td>
-                    <td className="py-4 px-6 flex justify-center items-center">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="rounded-md"
-                        width={50}
-                      />
-                    </td>
-                    <button
-                      onClick={() => {
-                        handleDeleteItem(item.id);
-                      }}
-                    >
-                      x
-                    </button>
-                  </tr>
+                    item={item}
+                    handleDeleteItem={handleDeleteItem}
+                  />
                 ))}
               </tbody>
             </table>
