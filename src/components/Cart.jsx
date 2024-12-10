@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import { CartItem } from "./CartItem";
+import { Modal } from "./Modal";
 
 export const Cart = ({ cart, clearCart, creationDate, deleteItem }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
   const totalProducts = cart.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -15,80 +19,112 @@ export const Cart = ({ cart, clearCart, creationDate, deleteItem }) => {
   };
 
   const handleDeleteItem = (productId) => {
-    deleteItem(productId);
-    toast.success("Producto eliminado del carrito");
+    setItemToDelete(productId);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (itemToDelete) {
+      deleteItem(itemToDelete);
+      setIsModalOpen(false);
+      setItemToDelete(null);
+      toast.success("Producto eliminado del carrito");
+    }
   };
 
   return (
-    <div className="font-sans p-6 h-96 bg-white shadow rounded w-2/3 flex flex-col ">
+    <div className="font-sans p-6 bg-background border border-accent rounded-lg shadow-sm w-full max-w-3xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4 text-text-primary">
+        Carrito de compras ({totalProducts})
+        {cart.length > 0 && (
+          <span className="text-sm font-normal ml-2 text-text-secondary">
+            iniciado el {creationDate.toLocaleDateString()}
+          </span>
+        )}
+      </h2>
       {cart.length > 0 ? (
-        <div>
-          <h2 className="font-bold m-2 text-2xl">
-            Carrito de compras ({totalProducts}) - iniciado el{" "}
-            {creationDate.toLocaleDateString()}
-          </h2>
-          <div className="overflow-y-auto max-h-60">
-            <table className="w-full border-collapse border border-gray-300 rounded-md my-4 shadow-sm">
-              <thead>
-                <tr>
-                  <th className="w-48">Producto</th>
-                  <th>Precio</th>
-                  <th>Cantidad</th>
-                  <th>Total</th>
-                  <th>Imagen</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cart.map((item, index) => (
-                  <CartItem
-                    key={index}
-                    item={item}
-                    handleDeleteItem={handleDeleteItem}
-                  />
-                ))}
-              </tbody>
-            </table>
+        <>
+          <div className="border border-accent rounded-md overflow-hidden">
+            <div className="max-h-[300px] overflow-y-auto">
+              <table className="w-full">
+                <thead className="bg-accent bg-opacity-10">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-text-secondary uppercase tracking-wider w-1/3">
+                      Producto
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-text-secondary uppercase tracking-wider w-1/6 hidden sm:table-cell">
+                      Precio
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-text-secondary uppercase tracking-wider w-1/6">
+                      Cantidad
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-text-secondary uppercase tracking-wider w-1/6 hidden sm:table-cell">
+                      Total
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-text-secondary uppercase tracking-wider w-1/6 hidden md:table-cell">
+                      Imagen
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-background divide-y divide-accent">
+                  {cart.map((item, index) => (
+                    <CartItem
+                      key={index}
+                      item={item}
+                      handleDeleteItem={handleDeleteItem}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div
-            className="flex flex-row justify-between items-end mt-4
-          "
-          >
+          <div className="flex justify-between items-center mt-4">
             <button
               onClick={handleClearCart}
-              className="bg-newRed text-white font-semibold py-2 px-4 rounded hover:text-slate-100 transition-colors"
+              className="px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
             >
               Vaciar carrito
             </button>
-            <p className="text-lg font-bold flex items-center">
-              <span className="mr-2">Total:</span>
-              <span className="text-newLightGreen">
-                ${totalPrice.toFixed(2)}
-              </span>
+            <p className="text-lg font-bold text-text-primary">
+              Total:{" "}
+              <span className="text-accent">${totalPrice.toFixed(2)}</span>
             </p>
           </div>
-        </div>
-      ) : (
-        <>
-          <h2 className="text-2xl font-bold m-2">
-            Carrito de compras ({totalProducts})
-          </h2>
-          <div className="text-center flex flex-col justify-center items-center mt-8 text-appleGray-700">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="150"
-              height="150"
-              viewBox="0 0 256 256"
-            >
-              <path
-                fill="currentColor"
-                d="M230.14 58.87A8 8 0 0 0 224 56H62.68L56.6 22.57A8 8 0 0 0 48.73 16H24a8 8 0 0 0 0 16h18l25.56 140.29a24 24 0 0 0 5.33 11.27a28 28 0 1 0 44.4 8.44h45.42a27.75 27.75 0 0 0-2.71 12a28 28 0 1 0 28-28H91.17a8 8 0 0 1-7.87-6.57L80.13 152h116a24 24 0 0 0 23.61-19.71l12.16-66.86a8 8 0 0 0-1.76-6.56M104 204a12 12 0 1 1-12-12a12 12 0 0 1 12 12m96 0a12 12 0 1 1-12-12a12 12 0 0 1 12 12m4-74.57a8 8 0 0 1-7.9 6.57H77.22L65.59 72h148.82Z"
-              />
-            </svg>
-            <h1 className="text-xl font-semibold">Tu carrito está vacío</h1>
-            <p className="mt-2">Agrega productos para comenzar tu compra</p>
-          </div>
         </>
+      ) : (
+        <div className="text-center py-12">
+          <svg
+            className="mx-auto h-12 w-12 text-text-secondary"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 004 0z"
+            />
+          </svg>
+          <h3 className="mt-2 text-sm font-medium text-text-primary">
+            Tu carrito está vacío
+          </h3>
+          <p className="mt-1 text-sm text-text-secondary">
+            Agrega productos para comenzar tu compra
+          </p>
+        </div>
       )}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Confirmar eliminación"
+        message="¿Estás seguro de que quieres eliminar este producto del carrito?"
+      />
     </div>
   );
 };
